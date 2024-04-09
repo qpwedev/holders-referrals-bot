@@ -1,3 +1,5 @@
+import { CallbackQuery } from "telegraf/typings/core/types/typegram";
+
 export type TVisitor = {
     id: number;
     first_name: string;

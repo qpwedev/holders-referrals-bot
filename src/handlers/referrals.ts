@@ -9,9 +9,12 @@ import { countReferrals } from "../db/db";
  * @param {Context} ctx - The Telegraf context for the current update.
  */
 export const referrals = async (ctx: Context) => {
-    // @ts-ignore
-    const userId = ctx.update.message?.from.id;
-    if (!userId) {
+    if (!("message" in ctx.update)) {
+        console.warn('No message found in the context.');
+        return; 
+    }
+    const userId = ctx.update.message.from.id
+     if (!userId) {
         console.warn('No user ID found in the context.');
         return;
     }
