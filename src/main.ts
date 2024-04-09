@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 config();
 import { Telegraf } from 'telegraf';
 import Handlers from './handlers';
+import { CallbackQuery } from 'telegraf/typings/core/types/typegram';
 
 console.log('Starting bot...');
 const bot = new Telegraf(process.env.BOT_TOKEN || '');
@@ -14,8 +15,7 @@ bot.command('chat', Handlers.connectWallet)
 bot.command('ref', Handlers.referrals)
 
 bot.on('callback_query', async (ctx) => {
-    // @ts-ignore
-    const data = ctx.callbackQuery.data
+    const data = (ctx.callbackQuery as CallbackQuery.DataQuery).data
     console.log(data)
 
     if (data.startsWith('check:')) {

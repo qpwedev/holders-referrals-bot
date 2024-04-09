@@ -4,8 +4,11 @@ import { TVisitor } from "../utils/types"
 import Handlers from "."
 
 const getMessageText = (ctx: Context) => {
-    // @ts-ignore
-    const messageText = ctx.message?.text
+    if (!("text" in ctx.message)) {
+        console.warn("No message found in the context.")
+        return;
+    };
+    const messageText = ctx.message.text
     return messageText
 }
 
