@@ -5,3 +5,13 @@ export type TVisitor = {
     username: string;
     created_at: string;
 }
+
+
+export type FetchTransactionsParams = {
+    address: string;
+    limit?: number;
+}
+
+export type TransactionResponse = {
+    transactions: any[];
+}
