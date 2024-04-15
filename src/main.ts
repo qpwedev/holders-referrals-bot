@@ -11,17 +11,30 @@ bot.start(
     Handlers.start
 );
 
-bot.command('chat', Handlers.connectWallet)
-bot.command('ref', Handlers.referrals)
+bot.command('connectWallet', Handlers.connectWallet)
+bot.command('referrals', Handlers.referrals)
 
 bot.on('callback_query', async (ctx) => {
     const data = (ctx.callbackQuery as CallbackQuery.DataQuery).data
-    console.log(data)
 
     if (data.startsWith('check:')) {
         await Handlers.checkTransactionAndBalance(ctx)
+    } else if (data === 'holders-chat-callback') {
+        await Handlers.connectWallet(ctx)
+    } else if (data === 'invite-friends-callback') {
+        await Handlers.referrals(ctx)
+    } else if (data.startsWith('back-button-')) {
+        await Handlers.backButton(ctx)
     }
 })
+
+
+// [
+//     Markup.button.callback('Holders Chat', '')
+// ],
+// [
+//     Markup.button.callback('Invite Friends', 'invite-friends-callback')
+// ],
 
 bot.catch((e) => {
     console.error(e)

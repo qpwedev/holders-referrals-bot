@@ -1,4 +1,5 @@
 import { Markup } from "telegraf";
+import { createBackButton } from "./utils";
 // import uuid
 
 const referrals = (url: string) => {
@@ -6,6 +7,9 @@ const referrals = (url: string) => {
         [
             Markup.button.switchToChat('🔗 Share', url)
         ],
+        [
+            createBackButton('menu')
+        ]
 
     ]
 }

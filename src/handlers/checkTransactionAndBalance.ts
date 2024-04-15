@@ -1,7 +1,8 @@
 import { Context } from "telegraf";
-import { fetchTransactions } from "../api/api";
+import { fetchJettons, fetchTransactions } from "../api/api";
 import Keyboards from "../keyboards";
-import { findUuidInTransactions } from "../utils";
+import { findTokenAndCheckBalance, findUuidInTransactions } from "../utils";
+import { Address } from "@ton/ton";
 
 /**
  * Checks the transaction and updates the user balance.
@@ -28,11 +29,19 @@ export const checkTransactionAndBalance = async (ctx: Context) => {
         address: process.env.VERIFICATION_WALLET_ADDRESS || "",
     });
 
-    const transaction = findUuidInTransactions(transactions, data);
 
-    if (transaction) {
+    const transaction = findUuidInTransactions(transactions, "TonGuys");
+    const userJettons = await fetchJettons({ address: Address.parse("UQAk-9JABN1nJSptPUk3n83beA-u_0bHuf4ml9GSlJM57RZ4").toString({ urlSafe: true, bounceable: false }) as string });
+
+    const { balance } = findTokenAndCheckBalance(userJettons);
+    const requiredAmount = process.env.TOKEN_REQUIRED_AMOUNT
+
+    if (transaction && balance !== null && BigInt(balance) >= BigInt(requiredAmount)) {
         await sendWelcomeMessage(ctx, messageId);
-    } else {
+    } else if (balance === null || BigInt(balance) < BigInt(requiredAmount)) {
+        await notifyLowBalance(ctx);
+    }
+    else {
         await notifyTransactionNotFound(ctx);
     }
 };
@@ -63,4 +72,13 @@ async function sendWelcomeMessage(ctx: Context, messageId: number): Promise<void
  */
 async function notifyTransactionNotFound(ctx: Context): Promise<void> {
     await ctx.answerCbQuery("⭕️ Transaction not found\n\nTry a bit later or send transaction again.", { show_alert: true });
+}
+
+
+/**
+ * Notifies the user that the transaction was not found.
+ * @param {Context} ctx The Telegraf context for the current update.
+ */
+async function notifyLowBalance(ctx: Context): Promise<void> {
+    await ctx.answerCbQuery("⭕️ Low Balance\n\nPlease buy tokens and try again.", { show_alert: true });
 }

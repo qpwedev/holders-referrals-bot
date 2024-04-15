@@ -1,0 +1,4 @@
+TODO
+- docker 
+- token check
+- 

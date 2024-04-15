@@ -9,12 +9,18 @@ import { countReferrals } from "../db/db";
  * @param {Context} ctx - The Telegraf context for the current update.
  */
 export const referrals = async (ctx: Context) => {
-    if (!("message" in ctx.update)) {
+    if (!("message" in ctx.update) && !("message" in ctx.callbackQuery)) {
         console.warn('No message found in the context.');
-        return; 
+        return;
     }
-    const userId = ctx.update.message.from.id
-     if (!userId) {
+    let userId;
+    if ("message" in ctx.update) {
+        userId = ctx.update.message.from.id;
+    } else {
+        userId = ctx.callbackQuery.message.chat.id;
+    }
+
+    if (!userId) {
         console.warn('No user ID found in the context.');
         return;
     }
@@ -44,5 +50,7 @@ Total: ${referralStats.totalReferrals}
 
 Referral Link: <code>t.me/${botUsername}?start=${userId}</code>`;
 
-    await Send.photo(ctx, message, Keyboards.referrals(`t.me/${botUsername}?start=${userId}`), './img/referrals.png');
+    await Send.photo(ctx, message, Keyboards.referrals(`t.me/${botUsername}?start=${userId}`), './img/referrals.png',
+        ctx.message?.message_id || ctx.callbackQuery?.message.message_id
+    );
 }

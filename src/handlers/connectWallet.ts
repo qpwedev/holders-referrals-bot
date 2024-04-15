@@ -26,6 +26,9 @@ export const connectWallet = async (ctx: Context) => {
  */
 async function sendVerificationMessage(ctx: Context, uuid: string): Promise<void> {
     const verificationAddress = process.env.VERIFICATION_WALLET_ADDRESS || "UNDEFINED";
+    const tokenTicker = process.env.TOKEN_TICKER
+    const tokenRequiredAmount = Number.parseInt(process.env.TOKEN_REQUIRED_AMOUNT);
+
     const message = `<b>🔌 Verify Wallet</b>
 
 <i>Please send 0.1 TON to the following address to verify your wallet.</i>
@@ -33,7 +36,17 @@ async function sendVerificationMessage(ctx: Context, uuid: string): Promise<void
 Address: <code>${verificationAddress}</code>
 
 Text: <code>${uuid}</code>
+
+Required amount: <code>${Math.round(tokenRequiredAmount / 1e9)} ${tokenTicker}</code>
 `;
 
-    await Send.photo(ctx, message, Keyboards.checkTransaction(uuid), './img/connect-wallet.png');
+
+    await Send.photo(
+        ctx,
+        message,
+        Keyboards.checkTransaction(uuid),
+        './img/connect-wallet.png',
+        ctx.message?.message_id || ctx.callbackQuery?.message.message_id
+    );
+
 }

@@ -1,4 +1,5 @@
 import { Markup } from "telegraf";
+import { createBackButton } from "./utils";
 // import uuid
 
 const checkTransaction = (uuidv4: string) => {
@@ -9,7 +10,9 @@ const checkTransaction = (uuidv4: string) => {
         [
             Markup.button.callback('♻️ Check Transaction', `check:${uuidv4}`)
         ],
-
+        [
+            createBackButton('menu')
+        ]
     ]
 }
 

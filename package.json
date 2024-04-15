@@ -4,6 +4,7 @@
   "author": "qpwedev",
   "license": "MIT",
   "dependencies": {
+    "@ton/ton": "^13.11.1",
     "@tonconnect/sdk": "3.0.0",
     "@types/node": "18.15.11",
     "@types/qrcode": "1.5.0",

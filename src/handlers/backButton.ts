@@ -3,12 +3,17 @@ import { addReferral, addVisitor } from "../db/db"
 import { TView, TVisitor } from "../utils/types"
 import Handlers from "."
 import { extractStartQueryParamAndType, getMessageText } from "../utils"
-const startHandler = async (ctx: Context) => {
-    try {
-        addVisitor({ ...ctx.from!, created_at: new Date().toISOString() } as TVisitor)
 
-        const messageText = getMessageText(ctx)
+export const backButton = async (ctx: Context) => {
+    try {
+        // @ts-ignore
+        const messageText = ctx.update.callback_query?.data
         const { path, type } = extractStartQueryParamAndType(messageText)
+
+        if (path === undefined || type === undefined || type === 'menu') {
+            await Handlers.menu(ctx)
+            return
+        }
 
         const defaultHandler = Handlers.menu
 
@@ -32,5 +37,3 @@ const startHandler = async (ctx: Context) => {
         console.log(error)
     }
 }
-
-export default startHandler

@@ -2,6 +2,8 @@ import start from "./start";
 import { checkTransactionAndBalance } from "./checkTransactionAndBalance";
 import { connectWallet } from "./connectWallet";
 import { referrals } from "./referrals";
+import { menu } from "./menu";
+import { backButton } from "./backButton";
 
 /**
  * A collection of handler functions for the bot. Each handler is associated with a specific bot command or action.
@@ -15,6 +17,8 @@ const Handlers = {
     connectWallet,
     checkTransactionAndBalance,
     referrals,
+    menu,
+    backButton
 };
 
 export default Handlers;
